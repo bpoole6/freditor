@@ -2,6 +2,7 @@ package freditor;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -42,7 +43,17 @@ public class Autosaver {
                 System.out.println("invalid directory " + directory);
             }
         }
-        return System.getProperty("user.home");
+        try {
+            String jarPath = new File(Autosaver.class.getProtectionDomain().getCodeSource().getLocation()
+                    .toURI()).getPath();
+            String path = jarPath.substring(0,jarPath.lastIndexOf(File.separator));
+            System.out.println("Saving files here "+ path);
+
+            return path;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+       // return System.getProperty("user.home");
     }
 
     private static String decodeUrl(String encoded) {
